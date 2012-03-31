@@ -28,6 +28,13 @@ describe "User Pages" do
 			end
 		end
 
+		describe "error messages" do
+			before { click_button "Create my account" }
+
+			it { should have_selector('title', text: "Signup") }
+			it { should have_content('error') }
+		end
+
 		describe "with valid information" do
 			before do
 				fill_in "Name", with: "Example User"
@@ -41,6 +48,14 @@ describe "User Pages" do
 					click_button "Create my account"
 				end.to change(User, :count).by(1)
 			end
+		end
+
+		describe "after saving the user" do
+			before { click_button "Create my account" }
+			let(:user) { User.find_by_email('user@example.com') }
+
+			it { should have_selector('title', text: user.name) }
+			it { should have_selector('div.alert.alert-success', text: 'Welcome') }
 		end
 	end
 end
